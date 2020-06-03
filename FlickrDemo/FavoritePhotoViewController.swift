@@ -2,7 +2,7 @@
 //  FavoritePhotoViewController.swift
 //  FlickrDemo
 //
-//  Created by XYZ on 2020/6/1.
+//  Created by Finn on 2020/6/1.
 //  Copyright © 2020 Finn. All rights reserved.
 //
 
