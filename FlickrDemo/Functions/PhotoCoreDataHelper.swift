@@ -11,7 +11,7 @@ import CoreData
 
 class PhotoCoreDataHelper {
     
-    var context :NSManagedObjectContext! = nil
+    var context: NSManagedObjectContext! = nil
     private let photoEntityName = "FavoritePhotos"
     
     init(context:NSManagedObjectContext) {
@@ -37,8 +37,8 @@ class PhotoCoreDataHelper {
         }
     }
     
-    // get
-    func getFavoritePhotos() -> [NSManagedObject]? {
+    // fetch
+    func fetchFavoritePhotos() -> [NSManagedObject]? {
         
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: photoEntityName)
 

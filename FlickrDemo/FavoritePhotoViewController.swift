@@ -15,9 +15,9 @@ class FavoritePhotoViewController: UIViewController {
     
     private let cellId = "photoCell"
     
-    lazy var coreDataHelper: PhotoCoreDataHelper = {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        return PhotoCoreDataHelper(context: context)
+    lazy var coreDataHelper: PhotoCoreDataHelper? = {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
+        return PhotoCoreDataHelper(context: appDelegate.persistentContainer.viewContext)
     }()
     lazy var noFavLabel: UILabel = {
         let lb = UILabel()
@@ -68,8 +68,11 @@ class FavoritePhotoViewController: UIViewController {
     
     fileprivate func getFavoritePhotos() {
         
-        if let favs = coreDataHelper.getFavoritePhotos() {
+        guard let okHelper = coreDataHelper else { return }
+        
+        if let favs = okHelper.fetchFavoritePhotos() {
             favPhotos = favs
+            favPhotoCollectionView.reloadData()
         }
         
         if favPhotos.count <= 0 {
@@ -93,11 +96,13 @@ extension FavoritePhotoViewController: UICollectionViewDelegate, UICollectionVie
             fatalError("Cell init error")
         }
         
-        let title   = favPhotos[indexPath.row].value(forKey: "title") as! String
-        let imgData = favPhotos[indexPath.row].value(forKey: "image") as! Data
+        guard let okTitle   = favPhotos[indexPath.row].value(forKey: "title") as? String,
+              let okImgData = favPhotos[indexPath.row].value(forKey: "image") as? Data   else {
+            fatalError("Get Favorite Photo Error")
+        }
         
-        cell.configFavoriteCell(title: title,
-                                img: UIImage(data: imgData))
+        cell.configFavoriteCell(title: okTitle,
+                                img: UIImage(data: okImgData))
         
         return cell
     }

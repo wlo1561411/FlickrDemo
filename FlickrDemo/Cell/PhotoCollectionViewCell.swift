@@ -28,9 +28,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         btn.setTitleColor(#colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), for: .normal)
         return btn
     }()
-    lazy var coreDataHelper: PhotoCoreDataHelper = {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        return PhotoCoreDataHelper(context: context)
+    lazy var coreDataHelper: PhotoCoreDataHelper? = {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
+        return PhotoCoreDataHelper(context: appDelegate.persistentContainer.viewContext)
     }()
         
 // MARK: - Cell initialize
@@ -95,11 +95,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 
     @objc func addBtnAction() {
         
-        guard let okTitle = imgTitleLabel.text else { return }
-        guard let okImg   = imgView.image      else { return }
+        guard let okTitle = imgTitleLabel.text,
+              let okImg   = imgView.image,
+              let okHelper = coreDataHelper  else { return }
 
-        if coreDataHelper.insertPhoto(photoTitle: okTitle,
-                                      photoImg: okImg) {
+        if okHelper.insertPhoto(photoTitle: okTitle,
+                                photoImg: okImg) {
             print("Add favorite success")
         }
     }

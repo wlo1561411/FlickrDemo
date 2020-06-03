@@ -81,10 +81,13 @@ class SearchViewController: UIViewController {
     
     fileprivate func isSearchable() -> Bool {
         
-        if nameTextField.text?.replace(target: " ", withString: "") == ""{
+        guard let okName   = nameTextField.text,
+              let okAmount = amountTextField.text else { return false }
+        
+        if okName.replace(target: " ", withString: "") == ""{
             popAlert(title: "資料輸入錯誤", message: "請檢查搜尋名稱是否有輸入字元(不含空白)。")
             return false
-        } else if !amountTextField.text!.isNumber {
+        } else if !okAmount.isNumber {
             popAlert(title: "顯示數量輸入錯誤", message: "顯示數量只能由數字組成。")
             return false
         } else {
@@ -115,10 +118,18 @@ class SearchViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "goToTabBar" {
-            let dvc = segue.destination as! TabBarViewController
-            if let resultVC = dvc.viewControllers?.first as? ResultViewController {
-                resultVC.text    = nameTextField.text!
-                resultVC.perPage = Int(amountTextField.text!)!
+            if let dvc = segue.destination as? TabBarViewController {
+                if let resultVC = dvc.viewControllers?.first as? ResultViewController {
+                    
+                    guard let okText       = nameTextField.text,
+                          let okPerPageStr = amountTextField.text,
+                          let okPerPage    = Int(okPerPageStr)    else {
+                            fatalError("Get Search text, amount Error")
+                    }
+                    
+                    resultVC.text    = okText
+                    resultVC.perPage = okPerPage
+                }
             }
         }
     }
@@ -152,6 +163,6 @@ extension String {
     
     var isNumber: Bool {
         guard !self.isEmpty else { return false }
-        return !self.contains(where: {Int(String($0)) == nil})
+        return !self.contains(where: { Int( String($0) ) == nil })
     }
 }

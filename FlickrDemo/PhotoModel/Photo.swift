@@ -32,9 +32,10 @@ class Photo {
     var photoID:  String?
     var secret:   String?
     var title:    String?
-    var imgTask: ImgDownloadTask?
+    var imgTask:  ImgDownloadTask?
     
     init(photoDict:[String:Any], indexRow:Int, imgDelegate: ImgDownloadDelegate) {
+        
         server   = photoDict["server"] as? String
         photoID  = photoDict["id"] as? String
         secret   = photoDict["secret"] as? String
@@ -55,10 +56,10 @@ class Photo {
      */
     private func encodePhotoUrl() -> URL? {
         
-        guard let okFarm    = farm    else { return nil }
-        guard let okServer  = server  else { return nil }
-        guard let okPhotoID = photoID else { return nil }
-        guard let okSecret  = secret  else { return nil }
+        guard let okFarm    = farm,
+              let okServer  = server,
+              let okPhotoID = photoID,
+              let okSecret  = secret  else { return nil }
         
         let urlString = "https://farm\(okFarm).staticflickr.com/\(okServer)/\(okPhotoID)_\(okSecret)_\(size).jpg"
         return URL(string: urlString)
